@@ -1,6 +1,12 @@
 [submodule "app/tools/libmnl"]
-	path = app/tools/libmnl
+	path = libwg/tools/libmnl
 	url = https://git.netfilter.org/libmnl/
 [submodule "app/tools/wireguard"]
-	path = app/tools/wireguard
+	path = libwg/tools/wireguard
+	url = https://git.zx2c4.com/WireGuard
+[submodule "libwg/tools/libmnl"]
+	path = libwg/tools/libmnl
+	url = https://git.netfilter.org/libmnl/
+[submodule "libwg/tools/wireguard"]
+	path = libwg/tools/wireguard
 	url = https://git.zx2c4.com/WireGuard

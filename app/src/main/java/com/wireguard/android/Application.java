@@ -119,7 +119,7 @@ public class Application extends android.app.Application {
                 sharedPreferences.getBoolean("dark_theme", false) ?
                         AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
-        tunnelManager = new TunnelManager(new FileConfigStore(getApplicationContext()));
+        tunnelManager = new TunnelManager(this, sharedPreferences, getBackend(), new FileConfigStore(getApplicationContext()), asyncWorker);
         tunnelManager.onCreate();
 
         asyncWorker.supplyAsync(Application::getBackend).thenAccept(futureBackend::complete);

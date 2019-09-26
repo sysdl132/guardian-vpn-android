@@ -59,27 +59,10 @@ android {
             }
         }
     }
-    externalNativeBuild {
-        cmake {
-            path 'tools/CMakeLists.txt'
-        }
-    }
-}
-
-ext {
-    annotationsVersion = '1.0.1'
-    appcompatVersion = '1.0.2'
-    cardviewVersion = '1.0.0'
-    databindingVersion = '3.3.1'
-    materialComponentsVersion = '1.0.0'
-    jsr305Version = '3.0.2'
-    preferenceVersion = '1.0.0'
-    streamsupportVersion = '1.7.0'
-    threetenabpVersion = '1.1.1'
-    zxingEmbeddedVersion = '3.6.0'
 }
 
 dependencies {
+    implementation project(":libwg")
     implementation "androidx.annotation:annotation:$annotationsVersion"
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "androidx.cardview:cardview:$cardviewVersion"

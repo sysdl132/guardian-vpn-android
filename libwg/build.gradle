@@ -1,0 +1,45 @@
+/*
+ * Copyright © 2019 WireGuard LLC. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "${projectDir}/tools/CMakeLists.txt"
+        }
+    }
+}
+
+dependencies {
+    implementation "androidx.annotation:annotation:$rootProject.ext.annotationsVersion"
+
+    implementation "androidx.databinding:databinding-runtime:$rootProject.ext.databindingVersion"
+
+    implementation "com.jakewharton.threetenabp:threetenabp:$threetenabpVersion"
+    implementation "net.sourceforge.streamsupport:android-retrofuture:$streamsupportVersion"
+}
