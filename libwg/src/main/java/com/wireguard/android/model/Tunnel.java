@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 WireGuard LLC. All Rights Reserved.
+ * Copyright © 2019 WireGuard LLC. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -79,7 +79,7 @@ public class Tunnel extends BaseObservable implements Keyed<String> {
     }
 
     public CompletionStage<State> getStateAsync() {
-        return TunnelManager.getTunnelState(this);
+        return manager.getTunnelState(this);
     }
 
     @Bindable
@@ -87,14 +87,14 @@ public class Tunnel extends BaseObservable implements Keyed<String> {
     public Statistics getStatistics() {
         // FIXME: Check age of statistics.
         if (statistics == null)
-            TunnelManager.getTunnelStatistics(this).whenComplete(ExceptionLoggers.E);
+            manager.getTunnelStatistics(this).whenComplete(ExceptionLoggers.E);
         return statistics;
     }
 
     public CompletionStage<Statistics> getStatisticsAsync() {
         // FIXME: Check age of statistics.
         if (statistics == null)
-            return TunnelManager.getTunnelStatistics(this);
+            return manager.getTunnelStatistics(this);
         return CompletableFuture.completedFuture(statistics);
     }
 
