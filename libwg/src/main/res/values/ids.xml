@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright © 2019 WireGuard LLC. All Rights Reserved.
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+
+<resources>
+    <item name="tools_unavailable_error" type="string">@string/tools_unavailable_error</item>
+    <item name="error_root" type="string">@string/error_root</item>
+    <item name="shell_start_error" type="string">@string/shell_start_error</item>
+    <item name="shell_marker_count_error" type="string">@string/shell_marker_count_error</item>
+    <item name="shell_exit_status_read_error" type="string">@string/shell_exit_status_read_error</item>
+    <item name="create_temp_dir_error" type="string">@string/create_temp_dir_error</item>
+    <item name="create_bin_dir_error" type="string">@string/create_bin_dir_error</item>
+    <item name="type_name_go_userspace" type="string">@string/type_name_go_userspace</item>
+    <item name="type_name_kernel_module" type="string">@string/type_name_kernel_module</item>
+    <item name="module_version_error" type="string">@string/module_version_error</item>
+    <item name="multiple_tunnels_error" type="string">@string/multiple_tunnels_error</item>
+    <item name="no_config_error" type="string">@string/no_config_error</item>
+    <item name="vpn_not_authorized_error" type="string">@string/vpn_not_authorized_error</item>
+    <item name="vpn_start_error" type="string">@string/vpn_start_error</item>
+    <item name="tun_create_error" type="string">@string/tun_create_error</item>
+    <item name="tunnel_on_error" type="string">@string/tunnel_on_error</item>
+    <item name="tunnel_config_error" type="string">@string/tunnel_config_error</item>
+    <item name="tunnel_error_invalid_name" type="string">@string/tunnel_error_invalid_name</item>
+    <item name="tunnel_error_already_exists" type="string">@string/tunnel_error_already_exists</item>
+</resources>

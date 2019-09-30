@@ -5,6 +5,7 @@
 
 package com.wireguard.android;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +17,7 @@ import android.preference.PreferenceManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.wireguard.android.activity.MainActivity;
 import com.wireguard.android.backend.Backend;
 import com.wireguard.android.backend.GoBackend;
 import com.wireguard.android.backend.WgQuickBackend;
@@ -52,7 +54,7 @@ public class Application extends android.app.Application {
         return get().asyncWorker;
     }
 
-    public static Backend getBackend() {
+    public Backend getBackend() {
         final Application app = get();
         synchronized (app.futureBackend) {
             if (app.backend == null) {
@@ -60,12 +62,12 @@ public class Application extends android.app.Application {
                 if (new File("/sys/module/wireguard").exists()) {
                     try {
                         app.rootShell.start();
-                        backend = new WgQuickBackend(app.getApplicationContext());
+                        backend = new WgQuickBackend(app.getApplicationContext(), rootShell, toolsInstaller);
                     } catch (final Exception ignored) {
                     }
                 }
                 if (backend == null)
-                    backend = new GoBackend(app.getApplicationContext());
+                    backend = new GoBackend(app.getApplicationContext(), new ComponentName(this, MainActivity.class));
                 app.backend = backend;
             }
             return app.backend;
@@ -112,7 +114,7 @@ public class Application extends android.app.Application {
 
         asyncWorker = new AsyncWorker(AsyncTask.SERIAL_EXECUTOR, new Handler(Looper.getMainLooper()));
         rootShell = new RootShell(getApplicationContext());
-        toolsInstaller = new ToolsInstaller(getApplicationContext());
+        toolsInstaller = new ToolsInstaller(getApplicationContext(), rootShell);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         AppCompatDelegate.setDefaultNightMode(
@@ -122,6 +124,6 @@ public class Application extends android.app.Application {
         tunnelManager = new TunnelManager(this, sharedPreferences, getBackend(), new FileConfigStore(getApplicationContext()), asyncWorker);
         tunnelManager.onCreate();
 
-        asyncWorker.supplyAsync(Application::getBackend).thenAccept(futureBackend::complete);
+        asyncWorker.supplyAsync(this::getBackend).thenAccept(futureBackend::complete);
     }
 }

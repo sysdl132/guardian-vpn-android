@@ -15,10 +15,10 @@ import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.annotation.Nullable;
 
-import com.wireguard.android.BR;
-import com.wireguard.android.R;
+import com.wireguard.android.backend.BR;
 import com.wireguard.android.backend.Backend;
 import com.wireguard.android.backend.BuildConfig;
+import com.wireguard.android.backend.R;
 import com.wireguard.android.configStore.ConfigStore;
 import com.wireguard.android.model.Tunnel.State;
 import com.wireguard.android.model.Tunnel.Statistics;
@@ -62,7 +62,7 @@ public final class TunnelManager extends BaseObservable {
     @Nullable private Tunnel lastUsedTunnel;
     private final RouteReceiver routeReceiver;
 
-    public TunnelManager(final Context context, SharedPreferences sharedPreferences, final Backend backend, final ConfigStore configStore, AsyncWorker asyncWorker) {
+    public TunnelManager(final Context context, final SharedPreferences sharedPreferences, final Backend backend, final ConfigStore configStore, final AsyncWorker asyncWorker) {
         this.context = context;
         this.sharedPreferences = sharedPreferences;
         this.backend = backend;
@@ -213,7 +213,7 @@ public final class TunnelManager extends BaseObservable {
         if (tunnel == lastUsedTunnel)
             return;
         lastUsedTunnel = tunnel;
-        notifyPropertyChanged(BR.lastUsedTunnel);
+        notifyPropertyChanged(com.wireguard.android.backend.BR.lastUsedTunnel);
         if (tunnel != null)
             sharedPreferences.edit().putString(KEY_LAST_USED_TUNNEL, tunnel.getName()).apply();
         else
@@ -272,7 +272,7 @@ public final class TunnelManager extends BaseObservable {
         });
     }
 
-    private static final class RouteReceiver extends BroadcastReceiver {
+    public static final class RouteReceiver extends BroadcastReceiver {
         private static final String PERMISSION = BuildConfig.APPLICATION_ID + ".permission.APP_DEFAULT";
         private final TunnelManager tunnelManager;
 
@@ -288,9 +288,18 @@ public final class TunnelManager extends BaseObservable {
             return routeReceiver;
         }
 
-        private static void route(final Context context, final Intent intent){
+        private static void route(final Context context, final Intent intent) {
             context.sendOrderedBroadcast(intent, PERMISSION);
+        }
 
+        public static void restoreState(Context context) {
+            final Intent intent = new Intent("com.wireguard.android.action.RESTORE_STATE");
+            context.sendOrderedBroadcast(intent, PERMISSION);
+        }
+
+        public static void setTunnelsDown(Context context) {
+            final Intent intent = new Intent("com.wireguard.android.action.SET_ALL_TUNNEL_DOWN");
+            context.sendOrderedBroadcast(intent, PERMISSION);
         }
 
         private RouteReceiver(final TunnelManager tunnelManager) {
@@ -306,6 +315,15 @@ public final class TunnelManager extends BaseObservable {
             if ("com.wireguard.android.action.REFRESH_TUNNEL_STATES".equals(action)) {
                 tunnelManager.refreshTunnelStates();
                 return;
+            } else if ("com.wireguard.android.action.SET_ALL_TUNNEL_DOWN".equals(action)) {
+                tunnelManager.getTunnels().thenAccept(tunnels -> {
+                    for (final Tunnel tunnel : tunnels) {
+                        if (tunnel != null && tunnel.getState() != State.DOWN)
+                            tunnel.setState(State.DOWN);
+                    }
+                });
+            } else if ("com.wireguard.android.action.RESTORE_STATE".equals(action)) {
+                tunnelManager.restoreState(true).whenComplete(ExceptionLoggers.D);
             }
 
             /* We disable the below, for now, as the security model of allowing this

@@ -1,19 +1,21 @@
 /*
- * Copyright © 2017-2019 WireGuard LLC. All Rights Reserved.
+ * Copyright © 2019 WireGuard LLC. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package com.wireguard.android.backend;
 
 import android.content.Context;
+
 import androidx.annotation.Nullable;
+
 import android.util.Log;
 
-import com.wireguard.android.Application;
-import com.wireguard.android.R;
 import com.wireguard.android.model.Tunnel;
 import com.wireguard.android.model.Tunnel.State;
 import com.wireguard.android.model.Tunnel.Statistics;
+import com.wireguard.android.util.RootShell;
+import com.wireguard.android.util.ToolsInstaller;
 import com.wireguard.config.Config;
 
 import java.io.File;
@@ -38,10 +40,14 @@ public final class WgQuickBackend implements Backend {
 
     private final File localTemporaryDir;
     private final Context context;
+    private final RootShell rootShell;
+    private final ToolsInstaller toolsInstaller;
 
-    public WgQuickBackend(final Context context) {
+    public WgQuickBackend(final Context context, final RootShell rootShell, final ToolsInstaller toolsInstaller) {
         localTemporaryDir = new File(context.getCacheDir(), "tmp");
         this.context = context;
+        this.rootShell = rootShell;
+        this.toolsInstaller = toolsInstaller;
     }
 
     @Override
@@ -65,8 +71,8 @@ public final class WgQuickBackend implements Backend {
         final List<String> output = new ArrayList<>();
         // Don't throw an exception here or nothing will show up in the UI.
         try {
-            Application.getToolsInstaller().ensureToolsAvailable();
-            if (Application.getRootShell().run(output, "wg show interfaces") != 0 || output.isEmpty())
+            toolsInstaller.ensureToolsAvailable();
+            if (rootShell.run(output, "wg show interfaces") != 0 || output.isEmpty())
                 return Collections.emptySet();
         } catch (final Exception e) {
             Log.w(TAG, "Unable to enumerate running tunnels", e);
@@ -94,7 +100,7 @@ public final class WgQuickBackend implements Backend {
     @Override
     public String getVersion() throws Exception {
         final List<String> output = new ArrayList<>();
-        if (Application.getRootShell()
+        if (rootShell
                 .run(output, "cat /sys/module/wireguard/version") != 0 || output.isEmpty())
             throw new Exception(context.getString(R.string.module_version_error));
         return output.get(0);
@@ -108,7 +114,7 @@ public final class WgQuickBackend implements Backend {
         if (state == originalState)
             return originalState;
         Log.d(TAG, "Changing tunnel " + tunnel.getName() + " to state " + state);
-        Application.getToolsInstaller().ensureToolsAvailable();
+        toolsInstaller.ensureToolsAvailable();
         setStateInternal(tunnel, tunnel.getConfig(), state);
         return getState(tunnel);
     }
@@ -124,7 +130,7 @@ public final class WgQuickBackend implements Backend {
                 state.toString().toLowerCase(Locale.ENGLISH), tempFile.getAbsolutePath());
         if (state == State.UP)
             command = "cat /sys/module/wireguard/version && " + command;
-        final int result = Application.getRootShell().run(null, command);
+        final int result = rootShell.run(null, command);
         // noinspection ResultOfMethodCallIgnored
         tempFile.delete();
         if (result != 0)

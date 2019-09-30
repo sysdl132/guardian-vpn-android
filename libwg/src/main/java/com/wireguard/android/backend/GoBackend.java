@@ -1,25 +1,21 @@
 /*
- * Copyright © 2017-2019 WireGuard LLC. All Rights Reserved.
+ * Copyright © 2019 WireGuard LLC. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package com.wireguard.android.backend;
 
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.ParcelFileDescriptor;
-import androidx.annotation.Nullable;
-import androidx.collection.ArraySet;
 import android.util.Log;
 
-import com.wireguard.android.Application;
-import com.wireguard.android.R;
-import com.wireguard.android.activity.MainActivity;
 import com.wireguard.android.model.Tunnel;
 import com.wireguard.android.model.Tunnel.State;
 import com.wireguard.android.model.Tunnel.Statistics;
-import com.wireguard.android.util.ExceptionLoggers;
+import com.wireguard.android.model.TunnelManager;
 import com.wireguard.android.util.SharedLibraryLoader;
 import com.wireguard.config.Config;
 import com.wireguard.config.InetNetwork;
@@ -32,6 +28,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import androidx.annotation.Nullable;
+import androidx.collection.ArraySet;
+
 import java9.util.concurrent.CompletableFuture;
 
 public final class GoBackend implements Backend {
@@ -39,12 +38,14 @@ public final class GoBackend implements Backend {
     private static CompletableFuture<VpnService> vpnService = new CompletableFuture<>();
 
     private final Context context;
+    private final ComponentName configureComponentName;
     @Nullable private Tunnel currentTunnel;
     private int currentTunnelHandle = -1;
 
-    public GoBackend(final Context context) {
+    public GoBackend(final Context context, ComponentName configureComponentName) {
         SharedLibraryLoader.loadSharedLibrary(context, "wg-go");
         this.context = context;
+        this.configureComponentName = configureComponentName;
     }
 
     private static native int wgGetSocketV4(int handle);
@@ -150,7 +151,8 @@ public final class GoBackend implements Backend {
             final VpnService.Builder builder = service.getBuilder();
             builder.setSession(tunnel.getName());
 
-            final Intent configureIntent = new Intent(context, MainActivity.class);
+            final Intent configureIntent = new Intent();
+            configureIntent.setComponent(configureComponentName);
             configureIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             builder.setConfigureIntent(PendingIntent.getActivity(context, 0, configureIntent, 0));
 
@@ -216,12 +218,13 @@ public final class GoBackend implements Backend {
 
         @Override
         public void onDestroy() {
-            Application.getTunnelManager().getTunnels().thenAccept(tunnels -> {
-                for (final Tunnel tunnel : tunnels) {
-                    if (tunnel != null && tunnel.getState() != State.DOWN)
-                        tunnel.setState(State.DOWN);
-                }
-            });
+            TunnelManager.RouteReceiver.setTunnelsDown(getApplicationContext());
+//            Application.getTunnelManager().getTunnels().thenAccept(tunnels -> {
+//                for (final Tunnel tunnel : tunnels) {
+//                    if (tunnel != null && tunnel.getState() != State.DOWN)
+//                        tunnel.setState(State.DOWN);
+//                }
+//            });
 
             vpnService = vpnService.newIncompleteFuture();
             super.onDestroy();
@@ -232,7 +235,8 @@ public final class GoBackend implements Backend {
             vpnService.complete(this);
             if (intent == null || intent.getComponent() == null || !intent.getComponent().getPackageName().equals(getPackageName())) {
                 Log.d(TAG, "Service started by Always-on VPN feature");
-                Application.getTunnelManager().restoreState(true).whenComplete(ExceptionLoggers.D);
+                TunnelManager.RouteReceiver.restoreState(getApplicationContext());
+//                Application.getTunnelManager().restoreState(true).whenComplete(ExceptionLoggers.D);
             }
             return super.onStartCommand(intent, flags, startId);
         }

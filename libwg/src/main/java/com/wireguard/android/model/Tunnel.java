@@ -9,7 +9,7 @@ import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.annotation.Nullable;
 
-import com.wireguard.android.BR;
+import com.wireguard.android.backend.BR;
 import com.wireguard.android.util.ExceptionLoggers;
 import com.wireguard.config.Config;
 import com.wireguard.util.Keyed;

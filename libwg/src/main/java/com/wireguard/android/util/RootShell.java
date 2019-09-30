@@ -9,8 +9,7 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 import android.util.Log;
 
-import com.wireguard.android.BuildConfig;
-import com.wireguard.android.R;
+import com.wireguard.android.backend.R;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -47,7 +46,7 @@ public class RootShell {
         localBinaryDir = new File(cacheDir, "bin");
         localTemporaryDir = new File(cacheDir, "tmp");
         preamble = String.format("export CALLING_PACKAGE=%s PATH=\"%s:$PATH\" TMPDIR='%s'; id -u\n",
-                BuildConfig.APPLICATION_ID, localBinaryDir, localTemporaryDir);
+                context.getPackageName(), localBinaryDir, localTemporaryDir);
         this.context = context;
     }
 
