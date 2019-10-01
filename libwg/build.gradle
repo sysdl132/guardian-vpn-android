@@ -40,8 +40,8 @@ dependencies {
     implementation "androidx.annotation:annotation:$rootProject.ext.annotationsVersion"
 
     implementation "androidx.databinding:databinding-runtime:$rootProject.ext.databindingVersion"
-    implementation "com.google.code.findbugs:jsr305:$jsr305Version"
+    implementation "com.google.code.findbugs:jsr305:$rootProject.ext.jsr305Version"
 
-    implementation "com.jakewharton.threetenabp:threetenabp:$threetenabpVersion"
-    implementation "net.sourceforge.streamsupport:android-retrofuture:$streamsupportVersion"
+    implementation "com.jakewharton.threetenabp:threetenabp:$rootProject.ext.threetenabpVersion"
+    implementation "net.sourceforge.streamsupport:android-retrofuture:$rootProject.ext.streamsupportVersion"
 }
