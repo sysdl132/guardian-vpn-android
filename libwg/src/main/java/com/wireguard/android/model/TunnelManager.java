@@ -88,6 +88,16 @@ public final class TunnelManager extends BaseObservable {
         return tunnel;
     }
 
+    /**
+     *  FIXME: Temp api to simplify connecting
+     */
+    public Tunnel create(final Config config, final String name){
+        if(!tunnels.containsKey(name)){
+            addToList(name, config, State.DOWN);
+        }
+        return tunnels.get(name);
+    }
+
     public CompletionStage<Tunnel> create(final String name, @Nullable final Config config) {
         if (Tunnel.isNameInvalid(name))
             return CompletableFuture.failedFuture(new IllegalArgumentException(context.getString(R.string.tunnel_error_invalid_name)));
