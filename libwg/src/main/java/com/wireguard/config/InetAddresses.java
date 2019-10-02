@@ -10,22 +10,12 @@ import java.lang.reflect.Method;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Utility methods for creating instances of {@link InetAddress}.
  */
 public final class InetAddresses {
-    private static final Method PARSER_METHOD;
-
-    static {
-        try {
-            // This method is only present on Android.
-            // noinspection JavaReflectionMemberAccess
-            PARSER_METHOD = InetAddress.class.getMethod("parseNumericAddress", String.class);
-        } catch (final NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private InetAddresses() {
         // Prevent instantiation.
@@ -41,8 +31,14 @@ public final class InetAddresses {
         if (address.isEmpty())
             throw new ParseException(InetAddress.class, address, "Empty address");
         try {
-            return (InetAddress) PARSER_METHOD.invoke(null, address);
-        } catch (final IllegalAccessException | InvocationTargetException e) {
+            final String[] ips = address.split("\\.");
+            byte byte1 = (byte)Integer.parseInt(ips[0]);
+            byte byte2 = (byte)Integer.parseInt(ips[1]);
+            byte byte3 = (byte)Integer.parseInt(ips[2]);
+            byte byte4 = (byte)Integer.parseInt(ips[3]);
+            InetAddress inetAddress = InetAddress.getByAddress(new byte[]{byte1,byte2,byte3,byte4});
+            return inetAddress;
+        } catch (final UnknownHostException e) {
             final Throwable cause = e.getCause();
             // Re-throw parsing exceptions with the original type, as callers might try to catch
             // them. On the other hand, callers cannot be expected to handle reflection failures.
