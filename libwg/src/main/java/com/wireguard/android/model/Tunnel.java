@@ -121,7 +121,8 @@ public class Tunnel extends BaseObservable implements Keyed<String> {
     @Nullable
     Statistics onStatisticsChanged(@Nullable final Statistics statistics) {
         this.statistics = statistics;
-        notifyPropertyChanged(BR.statistics);
+//        FIXME: set null and notify will cause exception and cause state wrong not able to switch anymore
+//        notifyPropertyChanged(BR.statistics);
         return statistics;
     }
 
