@@ -100,13 +100,13 @@ public class Tunnel extends BaseObservable implements Keyed<String> {
 
     Config onConfigChanged(final Config config) {
         this.config = config;
-        notifyPropertyChanged(BR.config);
+        //notifyPropertyChanged(BR.config);
         return config;
     }
 
     public String onNameChanged(final String name) {
         this.name = name;
-        notifyPropertyChanged(BR.name);
+        //notifyPropertyChanged(BR.name);
         return name;
     }
 
@@ -114,7 +114,7 @@ public class Tunnel extends BaseObservable implements Keyed<String> {
         if (state != State.UP)
             onStatisticsChanged(null);
         this.state = state;
-        notifyPropertyChanged(BR.state);
+        //notifyPropertyChanged(BR.state);
         return state;
     }
 
