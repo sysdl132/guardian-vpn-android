@@ -15,7 +15,6 @@ import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.annotation.Nullable;
 
-import com.wireguard.android.backend.BR;
 import com.wireguard.android.backend.Backend;
 import com.wireguard.android.backend.BuildConfig;
 import com.wireguard.android.backend.R;
@@ -223,7 +222,6 @@ public final class TunnelManager extends BaseObservable {
         if (tunnel == lastUsedTunnel)
             return;
         lastUsedTunnel = tunnel;
-        notifyPropertyChanged(com.wireguard.android.backend.BR.lastUsedTunnel);
         if (tunnel != null)
             sharedPreferences.edit().putString(KEY_LAST_USED_TUNNEL, tunnel.getName()).apply();
         else
