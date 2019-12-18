@@ -8,3 +8,5 @@ include ':crypto'
 project(':crypto').projectDir = new File(rootDir, 'modules/wireguard/crypto')
 include ':utility'
 project(':utility').projectDir = new File(rootDir, 'modules/wireguard/utility')
+include ':fpnsdk'
+project(':fpnsdk').projectDir = new File(rootDir, 'modules/fpnsdk')
