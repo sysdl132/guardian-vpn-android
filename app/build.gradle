@@ -74,6 +74,7 @@ dependencies {
     implementation project(':libwg')
     implementation project(':crypto')
     implementation project(':config')
+    implementation project(':fpnsdk')
     implementation(name:'country-flags', ext:'aar')
 
     implementation "net.sourceforge.streamsupport:android-retrofuture:$streamsupportVersion"
