@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.github.holidaybear.countryflags.getCountryFlagResId
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import java.util.ArrayDeque
 import java.util.concurrent.TimeUnit
@@ -28,7 +29,6 @@ import org.mozilla.firefox.vpn.ui.GuardianSnackbar
 import org.mozilla.firefox.vpn.ui.InAppNotificationView
 import org.mozilla.firefox.vpn.util.GooglePlayUtil
 import org.mozilla.firefox.vpn.util.StringResource
-import org.mozilla.firefox.vpn.util.getCountryFlag
 import org.mozilla.firefox.vpn.util.viewModel
 
 class VpnFragment : Fragment() {
@@ -157,7 +157,7 @@ class VpnFragment : Fragment() {
     private fun observeServers() {
         vpnViewModel.selectedServer.observe(viewLifecycleOwner, Observer { servers ->
             servers?.let {
-                country_flag.setImageResource(context!!.getCountryFlag(it.country.code))
+                country_flag.setImageResource(context!!.getCountryFlagResId(it.country.code))
                 country_name.text = it.city.name
             }
         })

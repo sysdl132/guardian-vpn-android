@@ -74,7 +74,6 @@ dependencies {
     implementation project(':libwg')
     implementation project(':crypto')
     implementation project(':config')
-    implementation(name:'country-flags', ext:'aar')
 
     implementation "net.sourceforge.streamsupport:android-retrofuture:$streamsupportVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -100,6 +99,7 @@ dependencies {
     implementation 'io.coil-kt:coil:0.7.0'
     implementation 'com.github.hadilq.liveevent:liveevent:1.0.1'
     implementation 'com.airbnb.android:lottie:3.2.2'
+    implementation 'com.github.Holidaybear:twemoji-country-flags:1.0.0'
     ktlint 'com.pinterest:ktlint:0.35.0'
 
     testImplementation 'junit:junit:4.12'

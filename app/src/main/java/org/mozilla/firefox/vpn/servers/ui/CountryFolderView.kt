@@ -5,10 +5,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import com.github.holidaybear.countryflags.getCountryFlagResId
 import kotlinx.android.synthetic.main.view_country_folder.view.*
 import org.mozilla.firefox.vpn.R
 import org.mozilla.firefox.vpn.servers.data.CountryInfo
-import org.mozilla.firefox.vpn.util.getCountryFlag
 
 class CountryFolderView : LinearLayout {
 
@@ -32,7 +32,7 @@ class CountryFolderView : LinearLayout {
 
     fun setCountry(country: CountryInfo) {
 
-        country_flag.setImageResource(context.getCountryFlag(country.code))
+        country_flag.setImageResource(context.getCountryFlagResId(country.code))
         country_name.text = country.name
 
         setOnClickListener {
